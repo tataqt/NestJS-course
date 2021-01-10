@@ -2,9 +2,14 @@ import { Body, Controller, Delete, Get, Header, HttpCode, HttpStatus, Param, Pos
 import { CreateProductDto } from './dto/create-product.dto';
 import { UprdateProductDto } from './dto/update-product.dto';
 import { Response, Request } from 'express'
+import { ProductService } from './product.services/product.services.service';
 
 @Controller('products')
 export class ProductsController {
+    constructor(private readonly productService: ProductService){
+
+    }
+
     @Get()
     // @Redirect('https://www.google.com/', 301)
     // getAll(@Req() requst:Request, @Res() res:Response): string {
@@ -12,21 +17,20 @@ export class ProductsController {
     //     return 'getAll';
     // }
 
-    getAll(): string {
-        return 'getAll';
+    getAll(){
+        return this.productService.getAll();
     }
 
     @Get(':id')
     getById(@Param('id') id: string) {
-        return `getById ${id}`;
+        return this.productService.getById(id);
     }
 
     @Post()
     @HttpCode(HttpStatus.CREATED)
     @Header('Cache-Control', 'none')
-    create(@Body() CreateProductDto: CreateProductDto): string {
-        return `Title = ${CreateProductDto.title}
-                Price = ${CreateProductDto.price}`;
+    create(@Body() CreateProductDto: CreateProductDto) {
+        return this.productService.create(CreateProductDto);
     }
 
     @Delete(':id')
